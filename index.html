@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Avios Value Calculator</title>
+  <style>
+    :root{
+      --bg:#f6f7fb; --card:#fff; --text:#111827; --muted:#6b7280;
+      --border:#e5e7eb; --good:#166534; --bad:#b91c1c; --best:#dcfce7;
+      --shadow: 0 10px 30px rgba(0,0,0,.06);
+      --radius: 14px;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+    }
+    body{ margin:0; background:var(--bg); color:var(--text); }
+    .wrap{ max-width:1100px; margin:0 auto; padding:22px; }
+    h1{ margin: 6px 0 6px; font-size: 26px; }
+    p{ margin: 0 0 14px; color:var(--muted); }
+    .card{ background:var(--card); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); padding:18px; }
+    .row{ display:flex; gap:14px; flex-wrap:wrap; align-items:flex-end; }
+    .field{ flex: 1 1 240px; }
+    label{ display:block; font-size:13px; color:var(--muted); margin-bottom:6px; }
+    input{ width:100%; padding:12px 12px; border:1px solid var(--border); border-radius:12px; font-size:16px; background:#fff; }
+    .note{ font-size:12px; color:var(--muted); margin-top:10px; }
+    .grid{ display:grid; grid-template-columns: 1fr; gap:16px; margin-top:16px; }
+    @media (min-width: 980px){ .grid{ grid-template-columns: 1fr 1fr; } }
+    h2{ font-size:16px; margin:0 0 10px; }
+    table{ width:100%; border-collapse: collapse; font-size:13px; }
+    th, td{ border-top:1px solid var(--border); padding:10px 10px; text-align:left; vertical-align:top; }
+    th{ font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; background:#fafafa; border-top:none; }
+    .badge{ display:inline-block; font-size:11px; padding:2px 8px; border-radius:999px; background:#eef2ff; color:#3730a3; margin-left:6px; }
+    .bestRow{ background: var(--best); }
+    .good{ color: var(--good); font-weight:600; }
+    .bad{ color: var(--bad); font-weight:600; }
+    .summary{ margin-top:14px; border:1px solid var(--border); border-radius:12px; padding:12px; background:#fbfffb; }
+    .summary h3{ margin:0 0 6px; font-size:14px; }
+    .summary .item{ font-size:13px; margin:6px 0; }
+    .muted{ color: var(--muted); }
+    .small{ font-size:12px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Avios Value Calculator</h1>
+    <p>Compare Boost vs Direct Purchase options (no promos, no links, no offers).</p>
+
+    <div class="card">
+      <div class="row">
+        <div class="field">
+          <label>Avios amount (used for Boost comparisons)</label>
+          <input id="aviosAmount" type="number" min="0" step="1" placeholder="e.g. 50000" />
+        </div>
+        <div class="field">
+          <label>Good deal threshold (p per Avios)</label>
+          <input id="goodDealThresholdP" type="number" min="0" step="0.001" value="1.000" />
+          <div class="note">Default = 1.000p. Anything cheaper is marked “Good deal”.</div>
+        </div>
+        <div class="field">
+          <label>EUR → GBP rate (only used if you add EUR-priced tiers later)</label>
+          <input id="eurToGbp" type="number" min="0" step="0.0001" value="0.86" />
+          <div class="note">Optional. Keep as-is if you’re not using EUR costs.</div>
+        </div>
+      </div>
+
+      <div id="topSummary" class="summary" style="display:none;">
+        <h3>Top Ranked Options</h3>
+        <div id="topItems"></div>
+        <div class="small muted">Ranking is by lowest cost per Avios.</div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h2>British Airways Boost Options</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Multiplier</th>
+              <th>Cost</th>
+              <th>Boosted Avios</th>
+              <th>Total Avios</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody id="baResults">
+            <tr><td colspan="5" class="muted">Enter an amount to see calculations</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h2>Qatar Airways Boost Options</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Multiplier</th>
+              <th>Cost</th>
+              <th>Boosted Avios</th>
+              <th>Total Avios</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody id="qrResults">
+            <tr><td colspan="5" class="muted">Enter an amount to see calculations</td></tr>
+          </tbody>
+        </table>
+        <div class="note">
+          Qatar boost pricing is configurable in the <code>CONFIG</code> section below.
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>British Airways Direct Purchase Options</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Purchase Amount</th>
+              <th>Cost</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody id="baDirectResults">
+            <tr><td colspan="3" class="muted">Direct purchase tiers load immediately</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h2>Qatar Airways Direct Purchase Options</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Purchase Amount</th>
+              <th>Total Avios</th>
+              <th>Cost</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody id="qatarDirectResults">
+            <tr><td colspan="4" class="muted">Direct purchase tiers load immediately</td></tr>
+          </tbody>
+        </table>
+        <div class="note">This version uses NO bonuses/offers. Total Avios = purchase amount.</div>
+      </div>
+    </div>
+
+    <p class="note">* Value assessment uses your “Good deal threshold” (default 1.000p per Avios).</p>
+  </div>
+
+  <script>
+    // =========================
+    // CONFIG (EDIT THESE)
+    // =========================
+    const CONFIG = {
+      // BA Boost: cost-per-Avios depends on boosted amount tier
+      // (These values are in GBP per Avios)
+      baBoost: {
+        thresholdBoostedAvios: 300000,
+        lowTier: { "1x": 0.0096, "2x": 0.0094, "3x": 0.0092 },
+        highTier: { "1x": 0.0177, "2x": 0.0177, "3x": 0.0177 }
+      },
+
+      // Qatar Boost: set your own pricing (GBP per Avios)
+      // multiplierKey -> { multiplier, costPerAvios }
+      qrBoost: {
+        "1x": { multiplier: 1, costPerAvios: 0.0108 },
+        "2x": { multiplier: 2, costPerAvios: 0.0104 },
+        "3x": { multiplier: 3, costPerAvios: 0.0101 }
+      },
+
+      // BA Direct Purchase tiers (GBP)
+      baDirectTiers: [
+        { amount: 2000, cost: 49 },
+        { amount: 5000, cost: 105 },
+        { amount: 10000, cost: 195 },
+        { amount: 20000, cost: 369 },
+        { amount: 50000, cost: 899 },
+        { amount: 100000, cost: 1779 },
+        { amount: 200000, cost: 3539 }
+      ],
+
+      // Qatar Direct Purchase tiers (GBP) — no bonuses/offers in this build
+      qatarDirectTiers: [
+        { amount: 1000, cost: 22.00 },
+        { amount: 5000, cost: 110.00 },
+        { amount: 10000, cost: 195.00 },
+        { amount: 25000, cost: 462.50 },
+        { amount: 50000, cost: 875.00 },
+        { amount: 100000, cost: 1750.00 },
+        { amount: 200000, cost: 3500.00 }
+      ]
+    };
+
+    // =========================
+    // Helpers
+    // =========================
+    const fmtGBP = (n) => new Intl.NumberFormat("en-GB", { style:"currency", currency:"GBP" }).format(n);
+    const fmtNum = (n) => new Intl.NumberFormat("en-GB").format(n);
+
+    const getRankLabel = (rank) => {
+      if (rank === 1) return "🥇 Best Value";
+      if (rank === 2) return "🥈 Second Best";
+      if (rank === 3) return "🥉 Third Best";
+      return "";
+    };
+
+    const isGoodDeal = (costPerAvios, thresholdPence) => (costPerAvios * 100) < thresholdPence;
+
+    const baCostMapForBoostedAmount = (boostedAmount) => {
+      const { thresholdBoostedAvios, lowTier, highTier } = CONFIG.baBoost;
+      return boostedAmount <= thresholdBoostedAvios ? lowTier : highTier;
+    };
+
+    const rankAll = (options) => {
+      const sorted = [...options].sort((a,b) => a.costPerAvios - b.costPerAvios);
+      sorted.forEach((o,i) => o.rank = i + 1);
+      return sorted;
+    };
+
+    // =========================
+    // Rendering
+    // =========================
+    function renderDirectTables(thresholdPence){
+      // BA Direct
+      const allOptions = [];
+      const baRows = CONFIG.baDirectTiers.map(t => {
+        const cpa = t.cost / t.amount;
+        allOptions.push({ airline:"BA Direct", label:`${fmtNum(t.amount)} Avios`, costPerAvios:cpa });
+        return { ...t, costPerAvios:cpa };
+      });
+
+      const ranked = rankAll(allOptions);
+
+      document.getElementById("baDirectResults").innerHTML = baRows.map(r => {
+        const label = `${fmtNum(r.amount)} Avios`;
+        const match = ranked.find(x => x.airline==="BA Direct" && x.label===label);
+        const rank = match?.rank ?? 0;
+        const good = isGoodDeal(r.costPerAvios, thresholdPence);
+        return `
+          <tr class="${rank<=3 ? "bestRow" : ""}">
+            <td>${label}${rank<=3 ? `<span class="badge">${getRankLabel(rank)}</span>` : ""}</td>
+            <td>${fmtGBP(r.cost)}</td>
+            <td>
+              <div class="${good ? "good" : "bad"}">${good ? "Good deal!" : "Not worth it"}</div>
+              <div class="small muted">${(r.costPerAvios*100).toFixed(3)}p per Avios · ${fmtNum(Math.round(1/r.costPerAvios))} Avios per £</div>
+            </td>
+          </tr>
+        `;
+      }).join("");
+
+      // Qatar Direct (no bonus)
+      const qAll = [];
+      const qRows = CONFIG.qatarDirectTiers.map(t => {
+        const totalAvios = t.amount;
+        const cpa = t.cost / totalAvios;
+        qAll.push({ airline:"Qatar Direct", label:`${fmtNum(t.amount)} Avios`, costPerAvios:cpa });
+        return { ...t, totalAvios, costPerAvios:cpa };
+      });
+
+      const qRanked = rankAll(qAll);
+
+      document.getElementById("qatarDirectResults").innerHTML = qRows.map(r => {
+        const label = `${fmtNum(r.amount)} Avios`;
+        const match = qRanked.find(x => x.airline==="Qatar Direct" && x.label===label);
+        const rank = match?.rank ?? 0;
+        const good = isGoodDeal(r.costPerAvios, thresholdPence);
+        return `
+          <tr class="${rank<=3 ? "bestRow" : ""}">
+            <td>${label}${rank<=3 ? `<span class="badge">${getRankLabel(rank)}</span>` : ""}</td>
+            <td>${fmtNum(r.totalAvios)}</td>
+            <td>${fmtGBP(r.cost)}</td>
+            <td>
+              <div class="${good ? "good" : "bad"}">${good ? "Good deal!" : "Not worth it"}</div>
+              <div class="small muted">${(r.costPerAvios*100).toFixed(3)}p per Avios · ${fmtNum(Math.round(1/r.costPerAvios))} Avios per £</div>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    function renderBoostTables(amount, thresholdPence){
+      if (!amount || amount <= 0){
+        document.getElementById("baResults").innerHTML = `<tr><td colspan="5" class="muted">Enter an amount to see calculations</td></tr>`;
+        document.getElementById("qrResults").innerHTML = `<tr><td colspan="5" class="muted">Enter an amount to see calculations</td></tr>`;
+        document.getElementById("topSummary").style.display = "none";
+        return;
+      }
+
+      const optionsForRanking = [];
+
+      // --- BA Boost (1x-3x only) ---
+      const baKeys = ["1x","2x","3x"];
+      const baRows = baKeys.map(key => {
+        const m = Number(key[0]);
+        const boostedAmount = amount * m;
+        const costMap = baCostMapForBoostedAmount(boostedAmount);
+        const cpa = costMap[key];
+        const totalAvios = amount + boostedAmount;
+        const cost = boostedAmount * cpa;
+        const good = isGoodDeal(cpa, thresholdPence);
+
+        optionsForRanking.push({ airline:"BA Boost", label:key, costPerAvios:cpa });
+
+        return { key, boostedAmount, totalAvios, cost, cpa, good };
+      });
+
+      // --- Qatar Boost (1x-3x) ---
+      const qrRows = Object.entries(CONFIG.qrBoost).map(([key, d]) => {
+        const boostedAmount = amount * d.multiplier;
+        const totalAvios = amount + boostedAmount;
+        const cost = boostedAmount * d.costPerAvios;
+        const cpa = d.costPerAvios;
+        const good = isGoodDeal(cpa, thresholdPence);
+
+        optionsForRanking.push({ airline:"Qatar Boost", label:key, costPerAvios:cpa });
+
+        return { key, boostedAmount, totalAvios, cost, cpa, good };
+      });
+
+      // Rank top across boost options
+      const ranked = rankAll(optionsForRanking);
+
+      document.getElementById("baResults").innerHTML = baRows.map(r => {
+        const match = ranked.find(x => x.airline==="BA Boost" && x.label===r.key);
+        const rank = match?.rank ?? 0;
+        return `
+          <tr class="${rank<=3 ? "bestRow" : ""}">
+            <td>${r.key}${rank<=3 ? `<span class="badge">${getRankLabel(rank)}</span>` : ""}</td>
+            <td>${fmtGBP(r.cost)}</td>
+            <td>${fmtNum(r.boostedAmount)}</td>
+            <td>${fmtNum(r.totalAvios)}</td>
+            <td>
+              <div class="${r.good ? "good" : "bad"}">${r.good ? "Good deal!" : "Not worth it"}</div>
+              <div class="small muted">${(r.cpa*100).toFixed(3)}p per Avios · ${fmtNum(Math.round(1/r.cpa))} Avios per £</div>
+            </td>
+          </tr>
+        `;
+      }).join("");
+
+      document.getElementById("qrResults").innerHTML = qrRows.map(r => {
+        const match = ranked.find(x => x.airline==="Qatar Boost" && x.label===r.key);
+        const rank = match?.rank ?? 0;
+        return `
+          <tr class="${rank<=3 ? "bestRow" : ""}">
+            <td>${r.key}${rank<=3 ? `<span class="badge">${getRankLabel(rank)}</span>` : ""}</td>
+            <td>${fmtGBP(r.cost)}</td>
+            <td>${fmtNum(r.boostedAmount)}</td>
+            <td>${fmtNum(r.totalAvios)}</td>
+            <td>
+              <div class="${r.good ? "good" : "bad"}">${r.good ? "Good deal!" : "Not worth it"}</div>
+              <div class="small muted">${(r.cpa*100).toFixed(3)}p per Avios · ${fmtNum(Math.round(1/r.cpa))} Avios per £</div>
+            </td>
+          </tr>
+        `;
+      }).join("");
+
+      // Top summary (best 3 across BA Boost + Qatar Boost)
+      const top3 = [...ranked].slice(0,3);
+      document.getElementById("topItems").innerHTML = top3.map((o, i) => `
+        <div class="item">
+          <strong>${getRankLabel(i+1)}:</strong>
+          ${o.airline} ${o.label} — ${(o.costPerAvios*100).toFixed(3)}p per Avios
+          <span class="muted">(${fmtNum(Math.round(1/o.costPerAvios))} Avios per £)</span>
+        </div>
+      `).join("");
+      document.getElementById("topSummary").style.display = "block";
+    }
+
+    // =========================
+    // Wire up
+    // =========================
+    function recalcAll(){
+      const amount = Number(document.getElementById("aviosAmount").value || 0);
+      const thresholdPence = Number(document.getElementById("goodDealThresholdP").value || 1.0);
+
+      renderDirectTables(thresholdPence);
+      renderBoostTables(amount, thresholdPence);
+    }
+
+    document.getElementById("aviosAmount").addEventListener("input", recalcAll);
+    document.getElementById("goodDealThresholdP").addEventListener("input", recalcAll);
+
+    // initial render
+    recalcAll();
+  </script>
+</body>
+</html>
