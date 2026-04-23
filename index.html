@@ -3,274 +3,292 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Avios Value Calculator (No promos)</title>
+  <title>Avios Boost Calculator — Everyday Points</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    :root{
-      --bg:#f5f7fb;
-      --card:#ffffff;
-      --text:#0f172a;
-      --muted:#64748b;
-      --border:#e2e8f0;
-      --good:#16a34a;
-      --bad:#dc2626;
-      --bestRow:#dcfce7;
-      --shadow:0 8px 24px rgba(15,23,42,.08);
-      --radius:16px;
+    :root {
+      --teal: #086375;
+      --gold: #d4af37;
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --good-bg: #e8f5f0;
+      --bad-bg: #fef2f2;
+      --bad-text: #b91c1c;
+      --warn-bg: #fffbeb;
+      --warn-border: #fde68a;
+      --warn-text: #b45309;
     }
-    *{ box-sizing:border-box; }
-    body{
-      margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
-      background:var(--bg);
-      color:var(--text);
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
     }
-    .wrap{
-      max-width: 1200px;
-      margin: 28px auto 40px;
-      padding: 0 18px;
+    .wrap {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px 60px;
     }
-    h1{
-      font-size: 34px;
-      margin: 0 0 8px;
+
+    /* Header */
+    .brand-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+    .brand-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--teal);
+    }
+    .brand-label {
+      font-family: 'Poppins', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--teal);
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+    h1 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 30px;
+      font-weight: 800;
+      color: var(--text);
       letter-spacing: -0.02em;
+      margin-bottom: 4px;
     }
-    .sub{
-      margin: 0 0 18px;
+    .sub {
+      font-size: 14px;
       color: var(--muted);
-      font-size: 16px;
+      margin-bottom: 28px;
     }
 
-    .card{
-      background:var(--card);
-      border:1px solid var(--border);
-      box-shadow: var(--shadow);
-      border-radius: var(--radius);
-      padding: 18px;
+    /* Gradient rule */
+    .rule {
+      height: 2px;
+      background: linear-gradient(90deg, var(--teal) 0%, var(--gold) 100%);
+      border-radius: 2px;
+      margin-bottom: 28px;
+      opacity: 0.25;
     }
 
-    .inputs{
-      display:grid;
-      grid-template-columns: 1fr;
-      gap:14px;
-      margin-bottom: 18px;
+    /* Input */
+    .input-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 32px;
     }
-    @media (min-width: 860px){
-      .inputs{
-        grid-template-columns: 1fr 1fr;
-      }
-    }
-
-    label{
-      display:block;
+    .input-card label {
       font-size: 13px;
       color: var(--muted);
-      margin-bottom: 8px;
       font-weight: 600;
-    }
-    input[type="number"]{
-      width: 100%;
-      padding: 14px 14px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      font-size: 16px;
-      outline: none;
-      background: #fff;
-    }
-    input[type="number"]:focus{
-      border-color:#94a3b8;
-      box-shadow: 0 0 0 3px rgba(148,163,184,.25);
-    }
-    .help{
-      margin-top: 8px;
-      font-size: 12px;
-      color: var(--muted);
-      line-height: 1.35;
-    }
-
-    .grid4{
-      display:grid;
-      grid-template-columns: 1fr;
-      gap: 16px;
-    }
-    @media (min-width: 980px){
-      .grid4{
-        grid-template-columns: 1fr 1fr;
-      }
-    }
-
-    h2{
-      font-size: 18px;
-      margin: 0 0 12px;
-      letter-spacing: -0.01em;
-    }
-
-    table{
-      width:100%;
-      border-collapse: collapse;
-      overflow:hidden;
-      border-radius: 12px;
-    }
-    thead th{
-      text-align:left;
-      font-size: 12px;
-      color: var(--muted);
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      border-bottom: 1px solid var(--border);
-      padding: 12px 12px;
-      background: #f8fafc;
       white-space: nowrap;
     }
-    tbody td{
-      padding: 12px 12px;
-      border-bottom: 1px solid var(--border);
-      font-size: 14px;
-      vertical-align: top;
+    .input-card input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      font-size: 26px;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      color: var(--text);
+      outline: none;
+      min-width: 0;
     }
-    tbody tr:last-child td{ border-bottom: none; }
-
-    .mutedRow{
+    .input-card input::placeholder { color: #cbd5e1; }
+    .input-card .unit {
+      font-size: 13px;
       color: var(--muted);
-      text-align:center;
-      font-size: 14px;
-      padding: 18px 12px !important;
+      white-space: nowrap;
+    }
+    .input-card:focus-within {
+      border-color: var(--teal);
+      box-shadow: 0 0 0 3px rgba(8, 99, 117, 0.12);
     }
 
-    .valueMain{
+    /* Section label */
+    .section-label {
+      font-family: 'Poppins', sans-serif;
+      font-size: 11px;
       font-weight: 800;
-      display:block;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-label span {
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* Cards grid */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+    @media (max-width: 600px) {
+      .cards { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+      position: relative;
+      overflow: hidden;
+    }
+    .card.best {
+      border-color: var(--teal);
+      border-width: 1.5px;
+    }
+    .card.best::before {
+      content: 'Best value';
+      position: absolute;
+      top: 0;
+      right: 0;
+      background: var(--teal);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 600;
+      font-family: 'Poppins', sans-serif;
+      padding: 4px 12px;
+      border-radius: 0 14px 0 10px;
+      letter-spacing: .04em;
+    }
+
+    .mult-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: #f0f9fa;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 800;
+      font-size: 15px;
+      color: var(--teal);
+      margin-bottom: 14px;
+    }
+
+    .card-row {
+      margin-bottom: 10px;
+    }
+    .card-row:last-of-type { margin-bottom: 0; }
+    .card-key {
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 600;
       margin-bottom: 2px;
     }
-    .good{ color: var(--good); }
-    .bad{ color: var(--bad); }
-
-    .valueSub{
+    .card-val {
+      font-size: 16px;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .card-val.gold { color: var(--gold); }
+    .card-val.muted {
+      font-size: 13px;
+      font-weight: 400;
+      font-family: 'Inter', sans-serif;
       color: var(--muted);
-      font-size: 12px;
-      line-height: 1.25;
     }
 
-    .pill{
-      display:inline-flex;
-      align-items:center;
-      gap:6px;
-      padding: 4px 10px;
+    .verdict {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
       border-radius: 999px;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 700;
-      background: #eef2ff;
-      color: #3730a3;
-      margin-left: 10px;
-      white-space: nowrap;
+      margin-top: 10px;
+    }
+    .verdict.good { background: var(--good-bg); color: var(--teal); }
+    .verdict.okay { background: #fffbeb; color: #92610a; }
+    .verdict.bad { background: var(--bad-bg); color: var(--bad-text); }
+    .verdict-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+    .verdict.good .verdict-dot { background: var(--teal); }
+    .verdict.okay .verdict-dot { background: #d4af37; }
+    .verdict.bad .verdict-dot { background: var(--bad-text); }
+
+    .warn {
+      font-size: 11px;
+      color: var(--warn-text);
+      background: var(--warn-bg);
+      border: 1px solid var(--warn-border);
+      border-radius: 8px;
+      padding: 8px 10px;
+      margin-top: 10px;
+      line-height: 1.4;
     }
 
-    .bestRow{ background: var(--bestRow); }
+    /* Divider */
+    .divider {
+      height: 1.5px;
+      background: linear-gradient(90deg, var(--teal) 0%, var(--gold) 100%);
+      border-radius: 2px;
+      margin-bottom: 28px;
+      opacity: 0.15;
+    }
 
-    .foot{
-      margin-top: 14px;
-      color: var(--muted);
+    /* Footer note */
+    .foot-note {
       font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px;
     }
-    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace; }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--muted);
+      font-size: 15px;
+    }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <h1>Avios Value Calculator</h1>
-    <p class="sub">Compare Boost vs Direct Purchase options (no promos, no links, no offers). Value baseline fixed at <b>1.00p per Avios</b>.</p>
+    <div class="brand-header">
+      <div class="brand-dot"></div>
+      <span class="brand-label">Everyday Points</span>
+    </div>
+    <h1>Avios Boost Calculator</h1>
+    <p class="sub">See exactly what you get at 1x, 2x, and 3x — no promos, no noise.</p>
+    <div class="rule"></div>
 
-    <div class="card">
-      <div class="inputs">
-        <div>
-          <label for="aviosAmount">Avios amount (used for Boost comparisons)</label>
-          <input id="aviosAmount" type="number" min="0" placeholder="e.g. 50000" />
-          <div class="help">
-            Enter the amount you want to “boost” (e.g. recent eligible transactions or transfer amount).
-          </div>
-        </div>
-        <div>
-          <label>Value rules (fixed)</label>
-          <input type="text" value="Good deal if under 1.00p per Avios" disabled />
-          <div class="help">
-            This calculator marks “Good deal” if <span class="mono">&lt; 1.00p</span> per Avios (i.e. costPerAvios &lt; 0.01).
-          </div>
-        </div>
-      </div>
+    <div class="input-card">
+      <label for="avios-in">Your Avios</label>
+      <input id="avios-in" type="number" min="0" placeholder="50,000" />
+      <span class="unit">pts</span>
+    </div>
 
-      <div class="grid4">
-        <div class="card" style="box-shadow:none;">
-          <h2>British Airways Boost Options</h2>
-          <table>
-            <thead>
-              <tr>
-                <th>Multiplier</th>
-                <th>Cost</th>
-                <th>Boosted Avios</th>
-                <th>Total Avios</th>
-                <th>Value</th>
-              </tr>
-            </thead>
-            <tbody id="baBoostBody">
-              <tr><td class="mutedRow" colspan="5">Enter an amount to see calculations</td></tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="card" style="box-shadow:none;">
-          <h2>Qatar Airways Boost Options</h2>
-          <table>
-            <thead>
-              <tr>
-                <th>Multiplier</th>
-                <th>Cost</th>
-                <th>Boosted Avios</th>
-                <th>Total Avios</th>
-                <th>Value</th>
-              </tr>
-            </thead>
-            <tbody id="qrBoostBody">
-              <tr><td class="mutedRow" colspan="5">Enter an amount to see calculations</td></tr>
-            </tbody>
-          </table>
-          <div class="foot">
-            Qatar boost pricing is configured in the <span class="mono">CONFIG.QR_BOOST</span> section in the code.
-          </div>
-        </div>
-
-        <div class="card" style="box-shadow:none;">
-          <h2>British Airways Direct Purchase Options</h2>
-          <table>
-            <thead>
-              <tr>
-                <th>Purchase Amount</th>
-                <th>Cost</th>
-                <th>Value</th>
-              </tr>
-            </thead>
-            <tbody id="baDirectBody"></tbody>
-          </table>
-        </div>
-
-        <div class="card" style="box-shadow:none;">
-          <h2>Qatar Airways Direct Purchase Options</h2>
-          <table>
-            <thead>
-              <tr>
-                <th>Purchase Amount</th>
-                <th>Total Avios</th>
-                <th>Cost</th>
-                <th>Value</th>
-              </tr>
-            </thead>
-            <tbody id="qrDirectBody"></tbody>
-          </table>
-          <div class="foot">This version uses NO bonuses/offers. Total Avios = purchase amount.</div>
-        </div>
-      </div>
-
-      <div class="foot" style="margin-top:18px;">
-        * BA Boost maths matches your original code: tiered pricing and the 300,000 boosted-Avios breakpoint.
-      </div>
+    <div id="output">
+      <div class="empty-state">Enter your Avios above to see boost scenarios</div>
     </div>
   </div>
 
@@ -278,301 +296,119 @@
     /******************************************************************
      * CONFIG
      ******************************************************************/
-    const CONFIG = {
-      // Fixed: "Good deal" means cheaper than 1.00p per Avios.
-      GOOD_DEAL_THRESHOLD: 0.01,
+    const BA_MULT = ["1x", "2x", "3x"];
 
-      // BA Boost multipliers (NO 4x/5x promo)
-      BA_MULTIPLIERS: ["1x","2x","3x"],
-
-      // Qatar Boost pricing (your original page pulled this from /calculate-avios-boost).
-      // Set these to the exact values you want (cost per Avios in GBP).
-      // Example placeholders below — edit to match your source of truth.
-      QR_BOOST: {
-        "1x": { multiplier: 1, costPerAvios: 0.0108 },
-        "2x": { multiplier: 2, costPerAvios: 0.0106 },
-        "3x": { multiplier: 3, costPerAvios: 0.0104 }
-      }
+    const QR_BOOST = {
+      "1x": { multiplier: 1, cpa: 0.0108 },
+      "2x": { multiplier: 2, cpa: 0.0106 },
+      "3x": { multiplier: 3, cpa: 0.0104 }
     };
+
+    const GOOD_THRESHOLD = 0.0093;  // < 0.93p = Good deal
+    const OKAY_THRESHOLD = 0.01;    // 0.93p–1.00p = Okay deal, > 1.00p = Not worth it
 
     /******************************************************************
-     * Helpers
+     * Logic helpers
      ******************************************************************/
-    const formatCurrency = (amount) =>
-      new Intl.NumberFormat("en-GB", { style:"currency", currency:"GBP" }).format(amount);
+    function baCPA(boosted, key) {
+      return boosted <= 300000
+        ? { "1x": 0.0096, "2x": 0.0094, "3x": 0.0092 }[key]
+        : 0.0177;
+    }
 
-    const formatNumber = (n) => new Intl.NumberFormat("en-GB").format(n);
+    function fmt(n) {
+      return new Intl.NumberFormat("en-GB").format(Math.round(n));
+    }
 
-    const getRankLabel = (rank) => {
-      if (rank === 1) return "🥇 Best Value";
-      if (rank === 2) return "🥈 Second Best";
-      if (rank === 3) return "🥉 Third Best";
-      return "";
-    };
+    function fmtGBP(n) {
+      return "£" + n.toFixed(2);
+    }
 
-    // === BA COST PER AVIOS (matches your original logic, with promo removed) ===
-    const getBACostPerAviosMap = (boostedAmount) => {
-      // boostedAmount = amount * multiplier
-      if (boostedAmount <= 300000) {
-        return { "1x": 0.0096, "2x": 0.0094, "3x": 0.0092 };
-      }
-      // Higher pricing tier after 300,000 boosted Avios
-      return { "1x": 0.0177, "2x": 0.0177, "3x": 0.0177 };
-    };
-
-    const valueCellHtml = (costPerAvios, isGoodDeal) => {
-      const pPerAvios = (costPerAvios * 100).toFixed(3);
-      const aviosPerPound = Math.round(1 / costPerAvios);
-      return `
-        <span class="valueMain ${isGoodDeal ? "good":"bad"}">${isGoodDeal ? "Good deal!" : "Not worth it"}</span>
-        <div class="valueSub">
-          ${pPerAvios}p per Avios<br>
-          ${formatNumber(aviosPerPound)} Avios per £
-        </div>
-      `;
-    };
-
-    /******************************************************************
-     * Direct purchase tiers (copied from your original code)
-     ******************************************************************/
-    const BA_PURCHASE_TIERS = [
-      { amount: 2000, cost: 49 },
-      { amount: 3000, cost: 69 },
-      { amount: 4000, cost: 89 },
-      { amount: 5000, cost: 105 },
-      { amount: 6000, cost: 125 },
-      { amount: 8000, cost: 159 },
-      { amount: 10000, cost: 195 },
-      { amount: 15000, cost: 279 },
-      { amount: 20000, cost: 369 },
-      { amount: 25000, cost: 459 },
-      { amount: 30000, cost: 545 },
-      { amount: 35000, cost: 635 },
-      { amount: 40000, cost: 719 },
-      { amount: 45000, cost: 809 },
-      { amount: 50000, cost: 899 },
-      { amount: 60000, cost: 1075 },
-      { amount: 70000, cost: 1249 },
-      { amount: 80000, cost: 1425 },
-      { amount: 90000, cost: 1599 },
-      { amount: 100000, cost: 1779 },
-      { amount: 125000, cost: 2219 },
-      { amount: 150000, cost: 2659 },
-      { amount: 175000, cost: 3099 },
-      { amount: 200000, cost: 3539 }
-    ];
-
-    const QATAR_PURCHASE_TIERS = [
-      { amount: 1000, cost: 22.00 },
-      { amount: 2000, cost: 44.00 },
-      { amount: 3000, cost: 66.00 },
-      { amount: 4000, cost: 88.00 },
-      { amount: 5000, cost: 110.00 },
-      { amount: 6000, cost: 117.00 },
-      { amount: 7000, cost: 136.50 },
-      { amount: 8000, cost: 156.00 },
-      { amount: 9000, cost: 175.50 },
-      { amount: 10000, cost: 195.00 },
-      { amount: 11000, cost: 203.50 },
-      { amount: 12000, cost: 222.00 },
-      { amount: 13000, cost: 240.50 },
-      { amount: 14000, cost: 259.00 },
-      { amount: 15000, cost: 277.50 },
-      { amount: 20000, cost: 370.00 },
-      { amount: 25000, cost: 462.50 },
-      { amount: 26000, cost: 455.00 },
-      { amount: 30000, cost: 525.00 },
-      { amount: 40000, cost: 700.00 },
-      { amount: 48000, cost: 840.00 },
-      { amount: 50000, cost: 875.00 },
-      { amount: 60000, cost: 1050.00 },
-      { amount: 80000, cost: 1400.00 },
-      { amount: 100000, cost: 1750.00 },
-      { amount: 150000, cost: 2625.00 },
-      { amount: 200000, cost: 3500.00 },
-      { amount: 250000, cost: 4375.00 }
-    ];
-
-    /******************************************************************
-     * Render direct tables (always shown)
-     ******************************************************************/
-    function renderDirectTables() {
-      // Build a combined list for ranking
-      const all = [];
-
-      // BA Direct
-      const baRows = BA_PURCHASE_TIERS.map(t => {
-        const costPerAvios = t.cost / t.amount;
-        all.push({
-          kind: "BADirect",
-          key: `${t.amount}`,
-          costPerAvios
-        });
-        return { ...t, costPerAvios };
-      });
-
-      // Qatar Direct (no bonuses)
-      const qrRows = QATAR_PURCHASE_TIERS.map(t => {
-        const totalAvios = t.amount;
-        const costPerAvios = t.cost / totalAvios;
-        all.push({
-          kind: "QRDirect",
-          key: `${t.amount}`,
-          costPerAvios
-        });
-        return { ...t, totalAvios, costPerAvios };
-      });
-
-      // Rank (lowest costPerAvios best)
-      all.sort((a,b)=>a.costPerAvios - b.costPerAvios);
-      const rankMap = new Map();
-      all.forEach((x,i)=>rankMap.set(`${x.kind}:${x.key}`, i+1));
-
-      // Render BA Direct
-      document.getElementById("baDirectBody").innerHTML = baRows.map(r => {
-        const rank = rankMap.get(`BADirect:${r.amount}`) || 9999;
-        const isGoodDeal = r.costPerAvios < CONFIG.GOOD_DEAL_THRESHOLD;
-        return `
-          <tr class="${rank<=3 ? "bestRow":""}">
-            <td>
-              ${formatNumber(r.amount)} Avios
-              ${rank<=3 ? `<span class="pill">${getRankLabel(rank)}</span>`:""}
-            </td>
-            <td>${formatCurrency(r.cost)}</td>
-            <td>${valueCellHtml(r.costPerAvios, isGoodDeal)}</td>
-          </tr>
-        `;
-      }).join("");
-
-      // Render Qatar Direct
-      document.getElementById("qrDirectBody").innerHTML = qrRows.map(r => {
-        const rank = rankMap.get(`QRDirect:${r.amount}`) || 9999;
-        const isGoodDeal = r.costPerAvios < CONFIG.GOOD_DEAL_THRESHOLD;
-        return `
-          <tr class="${rank<=3 ? "bestRow":""}">
-            <td>
-              ${formatNumber(r.amount)} Avios
-              ${rank<=3 ? `<span class="pill">${getRankLabel(rank)}</span>`:""}
-            </td>
-            <td>${formatNumber(r.totalAvios)}</td>
-            <td>${formatCurrency(r.cost)}</td>
-            <td>${valueCellHtml(r.costPerAvios, isGoodDeal)}</td>
-          </tr>
-        `;
-      }).join("");
+    function ppa(cpa) {
+      return (cpa * 100).toFixed(3) + "p";
     }
 
     /******************************************************************
-     * Render boost tables (dependent on input amount)
+     * Render
      ******************************************************************/
-    function renderBoostTables(amount) {
-      const baTbody = document.getElementById("baBoostBody");
-      const qrTbody = document.getElementById("qrBoostBody");
+    function buildCards(options, globalBestRank) {
+      return '<div class="cards">' + options.map(o => {
+        const isBest = o.rank === globalBestRank;
+        const verdictClass = o.cpa < GOOD_THRESHOLD ? 'good' : o.cpa < OKAY_THRESHOLD ? 'okay' : 'bad';
+        const verdictLabel = o.cpa < GOOD_THRESHOLD ? 'Good deal' : o.cpa < OKAY_THRESHOLD ? 'Okay deal' : 'Not worth it';
+        const over300k = o.group === "BA" && o.boosted > 300000;
+        return `
+          <div class="card${isBest ? ' best' : ''}">
+            <div class="mult-badge">${o.key}</div>
+            <div class="card-row">
+              <div class="card-key">Cost</div>
+              <div class="card-val">${fmtGBP(o.cost)}</div>
+            </div>
+            <div class="card-row">
+              <div class="card-key">Boosted Avios</div>
+              <div class="card-val">${fmt(o.boosted)}</div>
+            </div>
+            <div class="card-row">
+              <div class="card-key">Total Avios</div>
+              <div class="card-val gold">${fmt(o.total)}</div>
+            </div>
+            <div class="card-row">
+              <div class="card-key">Rate</div>
+              <div class="card-val muted">${ppa(o.cpa)} per Avios</div>
+            </div>
+            <div class="verdict ${verdictClass}">
+              <span class="verdict-dot"></span>
+              ${verdictLabel}
+            </div>
+            ${over300k ? '<div class="warn">Exceeds 300k threshold — higher rate applies</div>' : ''}
+          </div>
+        `;
+      }).join('') + '</div>';
+    }
+
+    function render() {
+      const amount = parseInt(document.getElementById('avios-in').value, 10);
+      const out = document.getElementById('output');
 
       if (!amount || amount <= 0) {
-        baTbody.innerHTML = `<tr><td class="mutedRow" colspan="5">Enter an amount to see calculations</td></tr>`;
-        qrTbody.innerHTML = `<tr><td class="mutedRow" colspan="5">Enter an amount to see calculations</td></tr>`;
+        out.innerHTML = '<div class="empty-state">Enter your Avios above to see boost scenarios</div>';
         return;
       }
 
-      const allOptions = [];
-
-      // BA boost options
-      CONFIG.BA_MULTIPLIERS.forEach(k => {
+      // Build BA options
+      const baOptions = BA_MULT.map(k => {
         const mult = parseInt(k, 10);
-        const boostedAmount = amount * mult;
-        const map = getBACostPerAviosMap(boostedAmount);
-        const costPerAvios = map[k];
-        const totalAvios = amount + boostedAmount;
-        const cost = boostedAmount * costPerAvios;
-        const isGoodDeal = costPerAvios < CONFIG.GOOD_DEAL_THRESHOLD;
-
-        allOptions.push({
-          group: "BA",
-          key: k,
-          boostedAmount,
-          totalAvios,
-          cost,
-          costPerAvios,
-          isGoodDeal
-        });
+        const boosted = amount * mult;
+        const cpa = baCPA(boosted, k);
+        const cost = boosted * cpa;
+        const total = amount + boosted;
+        return { group: "BA", key: k, mult, boosted, cpa, cost, total };
       });
 
-      // Qatar boost options (from CONFIG)
-      Object.entries(CONFIG.QR_BOOST).forEach(([k, d]) => {
-        const boostedAmount = amount * d.multiplier;
-        const totalAvios = amount + boostedAmount;
-        const cost = boostedAmount * d.costPerAvios;
-        const isGoodDeal = d.costPerAvios < CONFIG.GOOD_DEAL_THRESHOLD;
-
-        allOptions.push({
-          group: "QR",
-          key: k,
-          boostedAmount,
-          totalAvios,
-          cost,
-          costPerAvios: d.costPerAvios,
-          isGoodDeal
-        });
+      // Build QR options
+      const qrOptions = Object.entries(QR_BOOST).map(([k, d]) => {
+        const boosted = amount * d.multiplier;
+        const cost = boosted * d.cpa;
+        const total = amount + boosted;
+        return { group: "QR", key: k, mult: d.multiplier, boosted, cpa: d.cpa, cost, total };
       });
 
-      // Rank across ALL options (boost only) so “Best/Second/Third” is consistent
-      const ranked = [...allOptions].sort((a,b)=>a.costPerAvios - b.costPerAvios);
-      ranked.forEach((o,i)=>o.rank = i+1);
+      // Rank across all options combined (lowest cpa = best)
+      const all = [...baOptions, ...qrOptions].sort((a, b) => a.cpa - b.cpa);
+      all.forEach((o, i) => o.rank = i + 1);
+      const bestRank = 1;
 
-      const rankLookup = new Map(ranked.map(o => [`${o.group}:${o.key}`, o.rank]));
-
-      // Render BA boost table
-      baTbody.innerHTML = allOptions
-        .filter(o => o.group === "BA")
-        .sort((a,b)=>parseInt(a.key)-parseInt(b.key))
-        .map(o => {
-          const rank = rankLookup.get(`BA:${o.key}`) || 9999;
-          return `
-            <tr class="${rank<=3 ? "bestRow":""}">
-              <td>
-                ${o.key}
-                ${rank<=3 ? `<span class="pill">${getRankLabel(rank)}</span>`:""}
-              </td>
-              <td>${formatCurrency(o.cost)}</td>
-              <td>${formatNumber(o.boostedAmount)}</td>
-              <td>${formatNumber(o.totalAvios)}</td>
-              <td>${valueCellHtml(o.costPerAvios, o.isGoodDeal)}</td>
-            </tr>
-          `;
-        }).join("");
-
-      // Render QR boost table
-      qrTbody.innerHTML = allOptions
-        .filter(o => o.group === "QR")
-        .sort((a,b)=>parseInt(a.key)-parseInt(b.key))
-        .map(o => {
-          const rank = rankLookup.get(`QR:${o.key}`) || 9999;
-          return `
-            <tr class="${rank<=3 ? "bestRow":""}">
-              <td>
-                ${o.key}
-                ${rank<=3 ? `<span class="pill">${getRankLabel(rank)}</span>`:""}
-              </td>
-              <td>${formatCurrency(o.cost)}</td>
-              <td>${formatNumber(o.boostedAmount)}</td>
-              <td>${formatNumber(o.totalAvios)}</td>
-              <td>${valueCellHtml(o.costPerAvios, o.isGoodDeal)}</td>
-            </tr>
-          `;
-        }).join("");
+      out.innerHTML = `
+        <div class="section-label">British Airways <span></span></div>
+        ${buildCards(baOptions, bestRank)}
+        <div class="divider"></div>
+        <div class="section-label">Qatar Airways <span></span></div>
+        ${buildCards(qrOptions, bestRank)}
+        <p class="foot-note">Good deal = below 0.93p · Okay deal = 0.93p–1.00p · Not worth it = above 1.00p. Best value badge awarded across both airlines combined.</p>
+      `;
     }
 
-    /******************************************************************
-     * Wire up
-     ******************************************************************/
-    function recalc() {
-      const amount = parseInt(document.getElementById("aviosAmount").value, 10) || 0;
-      renderBoostTables(amount);
-    }
-
-    renderDirectTables();
-    document.getElementById("aviosAmount").addEventListener("input", recalc);
+    document.getElementById('avios-in').addEventListener('input', render);
   </script>
 </body>
 </html>
